@@ -43,4 +43,4 @@ Please email your solution as soon as you have completed the challenge or the ti
 ## How to Run
 
 You can see the api endpoints at http://localhost:8080/swagger-ui.html
-./mvnw clean package docker-compose build docker-compose up -d
+./mvnw clean package docker-compose up -d for bring up mongo container then java -jar ./target/minesweeperapi-0.0.1-SNAPSHOT.jar
