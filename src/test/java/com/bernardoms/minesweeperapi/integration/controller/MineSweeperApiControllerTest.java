@@ -17,7 +17,6 @@ import com.bernardoms.minesweeperapi.model.GameStatus;
 import com.bernardoms.minesweeperapi.model.Tile;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
@@ -131,7 +130,7 @@ class MineSweeperApiControllerTest extends IntegrationTest {
     var adjacentTiles = responseGame.getTiles().stream().filter(t -> t.isAdjacent(recognizedTile.get())).collect(Collectors.toList());
 
     for (Tile t : adjacentTiles) {
-      if (!t.isMine() || t.getNearMines() == 0) {
+      if (!t.isMine() || t.getNearMines() == 0 || !t.isFlagged()) {
         assertTrue(t.isVisible());
       } else {
         assertFalse(t.isVisible());
