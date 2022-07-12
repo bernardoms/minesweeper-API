@@ -149,4 +149,14 @@ class MineSweeperApiControllerTest extends IntegrationTest {
       }
     }
   }
+
+  @Test
+  void shouldNotRecognizeATileIfGameIsFinished() throws Exception {
+    var gameEventDTO = new GameEventDTO();
+    gameEventDTO.setPosX(0);
+    gameEventDTO.setPosY(1);
+
+    mockMvc.perform(put(URL_PATH + "/507f191e810c19729de861ec/recognize").content(mapper.writeValueAsString(gameEventDTO)))
+        .andExpect(status().isBadRequest());
+  }
 }
