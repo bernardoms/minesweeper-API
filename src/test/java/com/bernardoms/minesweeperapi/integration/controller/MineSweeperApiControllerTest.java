@@ -142,7 +142,7 @@ class MineSweeperApiControllerTest extends IntegrationTest {
     var adjacentTiles = responseGame.getTiles().stream().filter(t -> t.isAdjacent(recognizedTile.get())).collect(Collectors.toList());
 
     for (Tile t : adjacentTiles) {
-      if (!t.isMine() || t.getNearMines() > 0 || !t.isFlagged()) {
+      if (!t.isMine() && t.getNearMines() == 0) {
         assertTrue(t.isVisible());
       } else {
         assertFalse(t.isVisible());
