@@ -34,7 +34,7 @@ public class MineSweeperApiController {
     return ResponseEntity.created(uriComponents.toUri()).build();
   }
 
-  @GetMapping("/{gameId}/flag")
+  @PutMapping("/{gameId}/flag")
   public Game flag(@PathVariable ObjectId gameId, GameEventDTO gameEventDTO) {
     return mineSweeperApiService.flagTile(gameId, gameEventDTO);
   }

@@ -6,7 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,6 +18,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "game")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Game {
 
   @Id
