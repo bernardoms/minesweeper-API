@@ -39,3 +39,8 @@ We suggest not spending more than 4-5 hours total.  Please make commits as often
 What we want to see is how well you handle yourself given the time you spend on the problem, how you think, and how you prioritize when time is sufficient to solve everything.
 
 Please email your solution as soon as you have completed the challenge or the time is up
+
+## How to Run
+
+You can see the api endpoints at http://localhost:8080/swagger-ui.html
+./mvnw clean package docker-compose build docker-compose up -d
