@@ -40,7 +40,10 @@ What we want to see is how well you handle yourself given the time you spend on 
 
 Please email your solution as soon as you have completed the challenge or the time is up
 
-## How to Run
+## Running JAR
+* Build Package using ```mvn clean package``` command in the project folder, this will also execute tests
+* After package go run with  ```java -jar target/minesweeperapi-0.0.1-SNAPSHOT.jar```
+* Enter file location in console.
 
-You can see the api endpoints at http://localhost:8080/swagger-ui.html
-./mvnw clean package docker-compose up -d for bring up mongo container then java -jar ./target/minesweeperapi-0.0.1-SNAPSHOT.jar
+## RUNNING ON DOCKER
+* docker-compose -up -d will bring up the api + mongo containers.

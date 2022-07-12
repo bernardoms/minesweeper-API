@@ -4,5 +4,5 @@ spring:
       matching-strategy: ant_path_matcher
   data:
     mongodb:
-      uri: mongodb://local:local@localhost:27017/local?authSource=admin&authMechanism=SCRAM-SHA-1
+      uri: mongodb://local:local@localhost:27017/local?authSource=admin
 

@@ -9,10 +9,20 @@ services:
       MONGO_INITDB_DATABASE: local
       MONGO_INITDB_ROOT_USERNAME: local
       MONGO_INITDB_ROOT_PASSWORD: local
-      MONGO_NON_ROOT_USERNAM: local
+      MONGO_NON_ROOT_USERNAME: local
       MONGO_NON_ROOT_PASSWORD: local
     command: ["--bind_ip_all"]
     ports:
       - "27017:27017"
     volumes:
       - ./mongo-volume:/data/db
+
+  minesweeper:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - "JAVA_OPTS=-Dspring.data.mongodb.uri=mongodb://local:local@mongo:27017/local?authSource=admin"
+    depends_on:
+      - mongo
+
