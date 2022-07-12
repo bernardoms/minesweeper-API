@@ -107,9 +107,21 @@ class MineSweeperApiControllerTest extends IntegrationTest {
   }
 
   @Test
+  void shouldNotPauseGameThatIsAlreadyFinished() throws Exception {
+    mockMvc.perform(put(URL_PATH + "/507f191e810c19729de861ec/pause"))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
   void shouldResumeGame() throws Exception {
     mockMvc.perform(put(URL_PATH + "/507f191e810c19729de860ec/resume"))
         .andExpect(status().isOk());
+  }
+
+  @Test
+  void shouldNotResumeGameThatIsAlreadyFinished() throws Exception {
+    mockMvc.perform(put(URL_PATH + "/507f191e810c19729de861ec/resume"))
+        .andExpect(status().isBadRequest());
   }
 
   @Test
@@ -130,7 +142,7 @@ class MineSweeperApiControllerTest extends IntegrationTest {
     var adjacentTiles = responseGame.getTiles().stream().filter(t -> t.isAdjacent(recognizedTile.get())).collect(Collectors.toList());
 
     for (Tile t : adjacentTiles) {
-      if (!t.isMine() || t.getNearMines() == 0 || !t.isFlagged()) {
+      if (!t.isMine() || t.getNearMines() > 0 || !t.isFlagged()) {
         assertTrue(t.isVisible());
       } else {
         assertFalse(t.isVisible());

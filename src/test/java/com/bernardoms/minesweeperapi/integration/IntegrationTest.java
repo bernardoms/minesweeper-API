@@ -23,17 +23,20 @@ public abstract class IntegrationTest {
       return;
     }
     mongoTemplate
-        .save(createGame("507f191e810c19729de860eb", "test-player"));
+        .save(createGame("507f191e810c19729de860eb", "test-player", GameStatus.IN_PROGRESS));
 
     mongoTemplate
-        .save(createGame("507f191e810c19729de860ec", "test-player3"));
+        .save(createGame("507f191e810c19729de860ec", "test-player3", GameStatus.IN_PROGRESS));
+
+    mongoTemplate
+        .save(createGame("507f191e810c19729de861ec", "test-player4", GameStatus.WON));
 
     alreadySaved = true;
   }
 
-  private Game createGame(String id, String playerName) {
+  private Game createGame(String id, String playerName, GameStatus status) {
     var game = new Game();
-    game.setStatus(GameStatus.IN_PROGRESS);
+    game.setStatus(status);
     game.setGameId(new ObjectId(id));
     game.setTotalRows(10);
     game.setTotalColumns(10);
