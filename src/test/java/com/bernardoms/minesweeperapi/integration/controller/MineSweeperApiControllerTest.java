@@ -2,6 +2,7 @@ package com.bernardoms.minesweeperapi.integration.controller;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,9 +14,12 @@ import com.bernardoms.minesweeperapi.integration.IntegrationTest;
 import com.bernardoms.minesweeperapi.model.Game;
 import com.bernardoms.minesweeperapi.model.GameEventDTO;
 import com.bernardoms.minesweeperapi.model.GameStatus;
+import com.bernardoms.minesweeperapi.model.Tile;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -80,7 +84,7 @@ class MineSweeperApiControllerTest extends IntegrationTest {
 
     var responseGame = mapper.readValue(result.getResponse().getContentAsString(), Game.class);
 
-    var flaggedTile = responseGame.getTiles().stream().filter(t->t.getPosX() == 0 && t.getPosY() == 0).findFirst();
+    var flaggedTile = responseGame.getTiles().stream().filter(t -> t.getPosX() == 0 && t.getPosY() == 0).findFirst();
 
     assertTrue(flaggedTile.isPresent());
     assertTrue(flaggedTile.get().isFlagged());
@@ -91,7 +95,8 @@ class MineSweeperApiControllerTest extends IntegrationTest {
     var result = mockMvc.perform(get(URL_PATH + "/player/test-player"))
         .andExpect(status().isOk()).andReturn();
 
-    var responseGame = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Game>>() {});
+    var responseGame = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Game>>() {
+    });
 
     assertEquals(1, responseGame.size());
   }
@@ -106,5 +111,31 @@ class MineSweeperApiControllerTest extends IntegrationTest {
   void shouldResumeGame() throws Exception {
     mockMvc.perform(put(URL_PATH + "/507f191e810c19729de860ec/resume"))
         .andExpect(status().isOk());
+  }
+
+  @Test
+  void shouldRecognizeATile() throws Exception {
+    var gameEventDTO = new GameEventDTO();
+    gameEventDTO.setPosX(0);
+    gameEventDTO.setPosY(1);
+
+    var result = mockMvc.perform(put(URL_PATH + "/507f191e810c19729de860eb/recognize").content(mapper.writeValueAsString(gameEventDTO)))
+        .andExpect(status().isOk()).andReturn();
+
+    var responseGame = mapper.readValue(result.getResponse().getContentAsString(), Game.class);
+
+    var recognizedTile = responseGame.getTiles().stream().filter(t -> t.getPosX() == 1 && t.getPosY() == 1).findFirst();
+
+    assertTrue(recognizedTile.isPresent());
+
+    var adjacentTiles = responseGame.getTiles().stream().filter(t -> t.isAdjacent(recognizedTile.get())).collect(Collectors.toList());
+
+    for (Tile t : adjacentTiles) {
+      if (!t.isMine() || t.getNearMines() == 0) {
+        assertTrue(t.isVisible());
+      } else {
+        assertFalse(t.isVisible());
+      }
+    }
   }
 }
