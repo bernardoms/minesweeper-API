@@ -1,7 +1,7 @@
 package com.bernardoms.minesweeperapi.dto;
 
 import com.bernardoms.minesweeperapi.model.GameStatus;
-import com.bernardoms.minesweeperapi.model.Tile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -16,13 +16,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.data.annotation.LastModifiedDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class GameDTO {
+  @JsonIgnore
   private ObjectId gameId;
   private int numOfMines;
   private int clicks;
