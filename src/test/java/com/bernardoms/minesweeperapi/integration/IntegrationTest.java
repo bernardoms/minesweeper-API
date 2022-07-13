@@ -1,9 +1,11 @@
 package com.bernardoms.minesweeperapi.integration;
 
+import com.bernardoms.minesweeperapi.dto.GameDTO;
 import com.bernardoms.minesweeperapi.model.Game;
 import com.bernardoms.minesweeperapi.model.GameStatus;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,6 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 public abstract class IntegrationTest {
 
   private static boolean alreadySaved = false;
+  private final ModelMapper modelMapper = new ModelMapper();
 
   @Autowired
   MongoTemplate mongoTemplate;
@@ -35,14 +38,18 @@ public abstract class IntegrationTest {
   }
 
   private Game createGame(String id, String playerName, GameStatus status) {
-    var game = new Game();
-    game.setStatus(status);
+    var gameDTO = new GameDTO();
+    gameDTO.setStatus(status);
+    gameDTO.setTotalRows(10);
+    gameDTO.setTotalColumns(10);
+    gameDTO.setPlayer(playerName);
+    gameDTO.setNumOfMines(5);
+    gameDTO.start();
+
+    var game = modelMapper.map(gameDTO, Game.class);
+
     game.setGameId(new ObjectId(id));
-    game.setTotalRows(10);
-    game.setTotalColumns(10);
-    game.setPlayer(playerName);
-    game.setNumOfMines(5);
-    game.start();
+
     return game;
   }
 }

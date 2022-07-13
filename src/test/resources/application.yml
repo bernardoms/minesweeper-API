@@ -1,4 +1,7 @@
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   mongodb:
     embedded:
       version: 4.0.2

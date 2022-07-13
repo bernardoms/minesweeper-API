@@ -1,4 +1,4 @@
-package com.bernardoms.minesweeperapi.model;
+package com.bernardoms.minesweeperapi.dto;
 
 import lombok.Data;
 

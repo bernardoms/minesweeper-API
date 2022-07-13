@@ -10,15 +10,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.bernardoms.minesweeperapi.dto.GameDTO;
+import com.bernardoms.minesweeperapi.dto.GameEventDTO;
+import com.bernardoms.minesweeperapi.dto.TileDTO;
 import com.bernardoms.minesweeperapi.integration.IntegrationTest;
 import com.bernardoms.minesweeperapi.model.Game;
-import com.bernardoms.minesweeperapi.model.GameEventDTO;
 import com.bernardoms.minesweeperapi.model.GameStatus;
-import com.bernardoms.minesweeperapi.model.Tile;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,6 +36,10 @@ class MineSweeperApiControllerTest extends IntegrationTest {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
+  @BeforeEach
+  public void setup() {
+    mapper.registerModule(new JavaTimeModule());
+  }
   private static final String URL_PATH = "/v1/minesweeper/games";
 
   @Test
@@ -40,7 +47,7 @@ class MineSweeperApiControllerTest extends IntegrationTest {
     var result = mockMvc.perform(get(URL_PATH + "/507f191e810c19729de860eb"))
         .andExpect(status().isOk()).andReturn();
 
-    var responseGame = mapper.readValue(result.getResponse().getContentAsString(), Game.class);
+    var responseGame = mapper.readValue(result.getResponse().getContentAsString(), GameDTO.class);
 
     assertEquals("507f191e810c19729de860eb", responseGame.getGameId().toHexString());
     assertEquals(5, responseGame.getNumOfMines());
@@ -60,7 +67,7 @@ class MineSweeperApiControllerTest extends IntegrationTest {
 
   @Test
   void shouldCreateANewGame() throws Exception {
-    var game = new Game();
+    var game = new GameDTO();
     game.setStatus(GameStatus.IN_PROGRESS);
     game.setTotalRows(10);
     game.setTotalColumns(10);
@@ -94,7 +101,7 @@ class MineSweeperApiControllerTest extends IntegrationTest {
     var result = mockMvc.perform(get(URL_PATH + "/player/test-player"))
         .andExpect(status().isOk()).andReturn();
 
-    var responseGame = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Game>>() {
+    var responseGame = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<GameDTO>>() {
     });
 
     assertEquals(1, responseGame.size());
@@ -133,7 +140,7 @@ class MineSweeperApiControllerTest extends IntegrationTest {
     var result = mockMvc.perform(put(URL_PATH + "/507f191e810c19729de860eb/recognize").content(mapper.writeValueAsString(gameEventDTO)))
         .andExpect(status().isOk()).andReturn();
 
-    var responseGame = mapper.readValue(result.getResponse().getContentAsString(), Game.class);
+    var responseGame = mapper.readValue(result.getResponse().getContentAsString(), GameDTO.class);
 
     var recognizedTile = responseGame.getTiles().stream().filter(t -> t.getPosX() == 1 && t.getPosY() == 1).findFirst();
 
@@ -141,7 +148,7 @@ class MineSweeperApiControllerTest extends IntegrationTest {
 
     var adjacentTiles = responseGame.getTiles().stream().filter(t -> t.isAdjacent(recognizedTile.get())).collect(Collectors.toList());
 
-    for (Tile t : adjacentTiles) {
+    for (TileDTO t : adjacentTiles) {
       if (!t.isMine() && t.getNearMines() == 0) {
         assertTrue(t.isVisible());
       } else {

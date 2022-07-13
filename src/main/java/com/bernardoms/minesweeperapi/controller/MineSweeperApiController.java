@@ -1,8 +1,8 @@
 package com.bernardoms.minesweeperapi.controller;
 
-import com.bernardoms.minesweeperapi.model.CreateGameDTO;
-import com.bernardoms.minesweeperapi.model.Game;
-import com.bernardoms.minesweeperapi.model.GameEventDTO;
+import com.bernardoms.minesweeperapi.dto.CreateGameDTO;
+import com.bernardoms.minesweeperapi.dto.GameDTO;
+import com.bernardoms.minesweeperapi.dto.GameEventDTO;
 import com.bernardoms.minesweeperapi.service.MineSweeperApiService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,17 +35,17 @@ public class MineSweeperApiController {
   }
 
   @PutMapping("/{gameId}/flag")
-  public Game flag(@PathVariable ObjectId gameId, GameEventDTO gameEventDTO) {
+  public GameDTO flag(@PathVariable ObjectId gameId, GameEventDTO gameEventDTO) {
     return mineSweeperApiService.flagTile(gameId, gameEventDTO);
   }
 
   @GetMapping("/{gameId}")
-  public Game findGameById(@PathVariable ObjectId gameId) {
+  public GameDTO findGameById(@PathVariable ObjectId gameId) {
     return mineSweeperApiService.findGameById(gameId);
   }
 
   @GetMapping("/player/{playerName}")
-  public List<Game> findGamesFromPlayer(@PathVariable String playerName) {
+  public List<GameDTO> findGamesFromPlayer(@PathVariable String playerName) {
     return mineSweeperApiService.findGamesByPlayer(playerName);
   }
 
@@ -60,7 +60,7 @@ public class MineSweeperApiController {
   }
 
   @PutMapping("{gameId}/recognize")
-  public Game recognize(@PathVariable ObjectId gameId, GameEventDTO gameEventDTO) {
+  public GameDTO recognize(@PathVariable ObjectId gameId, GameEventDTO gameEventDTO) {
     return mineSweeperApiService.recognize(gameId, gameEventDTO);
   }
 }

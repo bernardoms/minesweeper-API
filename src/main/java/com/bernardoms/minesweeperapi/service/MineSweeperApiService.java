@@ -1,9 +1,9 @@
 package com.bernardoms.minesweeperapi.service;
 
+import com.bernardoms.minesweeperapi.dto.CreateGameDTO;
+import com.bernardoms.minesweeperapi.dto.GameDTO;
+import com.bernardoms.minesweeperapi.dto.GameEventDTO;
 import com.bernardoms.minesweeperapi.exception.MineSweeperApiException;
-import com.bernardoms.minesweeperapi.model.CreateGameDTO;
-import com.bernardoms.minesweeperapi.model.Game;
-import com.bernardoms.minesweeperapi.model.GameEventDTO;
 import com.bernardoms.minesweeperapi.model.GameStatus;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 public class MineSweeperApiService {
   private final GameService gameService;
 
-  public Game createGame(CreateGameDTO createGameDTO) {
-    Game game = new Game();
+  public GameDTO createGame(CreateGameDTO createGameDTO) {
+    GameDTO game = new GameDTO();
     game.setPlayer(createGameDTO.getPlayer());
     game.setNumOfMines(createGameDTO.getNumOfMines());
     game.setTotalColumns(createGameDTO.getTotalColumns());
@@ -28,11 +28,11 @@ public class MineSweeperApiService {
     return gameService.save(game);
   }
 
-  public Game findGameById(ObjectId gameId) {
+  public GameDTO findGameById(ObjectId gameId) {
     return gameService.findGameById(gameId).orElseThrow(() -> new MineSweeperApiException("Game not found", HttpStatus.NOT_FOUND));
   }
 
-  public List<Game> findGamesByPlayer(String playerName) {
+  public List<GameDTO> findGamesByPlayer(String playerName) {
     return gameService.findGamesByPlayer(playerName);
   }
 
@@ -46,7 +46,7 @@ public class MineSweeperApiService {
     gameService.changeGameStatus(gameId, GameStatus.PAUSED);
   }
 
-  public Game flagTile(ObjectId gameId, GameEventDTO gameEventDTO) {
+  public GameDTO flagTile(ObjectId gameId, GameEventDTO gameEventDTO) {
     var game = this.findGameById(gameId);
 
     checkIfGameEnded(gameId);
@@ -61,7 +61,7 @@ public class MineSweeperApiService {
     return gameService.save(game);
   }
 
-  public Game recognize(ObjectId gameId, GameEventDTO gameEventDTO) {
+  public GameDTO recognize(ObjectId gameId, GameEventDTO gameEventDTO) {
     var game = this.findGameById(gameId);
 
     checkIfGameEnded(gameId);
